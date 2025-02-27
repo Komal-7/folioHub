@@ -5,14 +5,13 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-// import SignUp from "./pages/signUp";
 import { AuthProvider } from './utils/AuthProvider';
 import PrivateRoutes from './utils/PrivateRoutes';
 import Home from './pages/home';
 import Login from './pages/login';
+import SignUp from './pages/signUp';
 
 function App() {
-
 
   return (
     <BrowserRouter>
@@ -24,7 +23,7 @@ function App() {
             <Route path="/" element={<Home />} />
           </Route>
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/signup" element={<SignUp />} /> */}
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
