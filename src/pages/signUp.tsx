@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
@@ -13,8 +12,7 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../components/shared-theme/AppTheme';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useAuth } from '../utils/AuthProvider';
+import api from '../utils/apiAxios';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -59,7 +57,6 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp() {
-  const { login } = useAuth();
   const navigate = useNavigate();
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
@@ -116,14 +113,12 @@ export default function SignUp() {
       email: data.get('email'),
       password: data.get('password'),
     };
-    try{
-      const url = `https://67b3ff48392f4aa94fa8e383.mockapi.io/api/v1/users`
-      const response = await axios.post(url,payload);
-      //tochange
-      login("dummyToken");
-      navigate("/");
-    }catch(error){
-      console.error(error)
+    try {
+      const response = await api.post("/register", { username: payload.username, email: payload.email, password: payload.password });
+      console.log(response.data.message);
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration failed", error);
     }
 
   };

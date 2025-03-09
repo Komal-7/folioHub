@@ -1,9 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
@@ -14,9 +11,9 @@ import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../components/shared-theme/AppTheme';
-import { useAuth } from '../utils/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/apiAxios';
+import { useAuth } from '../utils/AuthProvider';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -75,22 +72,13 @@ export default function SignIn() {
       return;
     }
     const data = new FormData(event.currentTarget);
-
     try {
-      const url = `https://67b3ff48392f4aa94fa8e383.mockapi.io/api/v1/users`
-      const response = await axios.get(url);
-      const foundUser = response.data.find(
-        (user: any) => user.email === data.get('email') && user.password === data.get('password')
-      );
-      //tochange
-      if (foundUser) {
-        login("dummyToken");
-        navigate("/");
-      } else {
-        setCredentialsErrorMessage('Invalid Crendtials !')
-      }
+      const response = await api.post("/login", { email: data.get('email'), password: data.get('password') });
+      console.log(response.data.message);
+      login();
     } catch (error) {
-      console.error(error);
+      console.error("Login failed", error);
+      setCredentialsErrorMessage('Invalid Crendtials !')
     }
       
   };

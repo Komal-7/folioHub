@@ -1,28 +1,58 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import api from "./apiAxios";
 
 interface AuthContextType {
-    isAuthenticated: boolean;
-    login: (userToken: string) => void;
+    user: { email: string; username: string; } | null;
+    loading: boolean;
+    login: () => void;
     logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
-    isAuthenticated: false,
+    user: null,
+    loading: false,
     login: () => {},
     logout: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(null);
-  const login = (userToken:string) => {
-    setToken(userToken);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await api.get("/user");
+        setUser(response.data);
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
+  
+  const login = async () => {
+    try {
+      const response = await api.get("/user");
+      setUser(response.data);
+    } catch (error) {
+      throw new Error("Login failed");
+    }
+
   };
-  const logout = () => {
-    setToken(null);
+  const logout = async () => {
+    try {
+      await api.post("/logout");
+      setUser(null);
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
   };
-  const isAuthenticated = !!token;
+  
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

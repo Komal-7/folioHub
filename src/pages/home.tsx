@@ -26,7 +26,6 @@ const Home = () => {
     return (
         <div>
           <Navbar />
-            <p>This is a home page for your application.</p>
             <Box
               display="flex"
               justifyContent="center"
