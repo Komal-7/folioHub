@@ -6,11 +6,11 @@ import {
   Route,
 } from "react-router-dom";
 import { AuthProvider } from './utils/AuthProvider';
-import PrivateRoutes from './utils/PrivateRoutes';
+import {PrivateRoutes, PublicRoutes} from './utils/PrivateRoutes';
 import Home from './pages/home';
 import Login from './pages/login';
 import SignUp from './pages/signUp';
-
+import './App.css'
 function App() {
 
   return (
@@ -22,8 +22,11 @@ function App() {
             {" "}
             <Route path="/" element={<Home />} />
           </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route element={<PublicRoutes />}>
+            {" "}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

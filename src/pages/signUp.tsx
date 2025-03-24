@@ -64,6 +64,7 @@ export default function SignUp() {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [usernameError, setUsernameError] = React.useState(false);
   const [usernameErrorMessage, setusernameErrorMessage] = React.useState('');
+  const [signupErrorMessage, setSignupErrorMessage] = React.useState('');
 
   const validateInputs = () => {
     const email = document.getElementById('email') as HTMLInputElement;
@@ -117,7 +118,8 @@ export default function SignUp() {
       const response = await api.post("/register", { username: payload.username, email: payload.email, password: payload.password });
       console.log(response.data.message);
       navigate("/login");
-    } catch (error) {
+    } catch (error:any) {
+      setSignupErrorMessage(error.response.data.error)
       console.error("Registration failed", error);
     }
 
@@ -184,6 +186,9 @@ export default function SignUp() {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
+            <Typography color='error' sx={{height:'21px'}}>
+              {signupErrorMessage}
+            </Typography>
             <Button
               type="submit"
               fullWidth

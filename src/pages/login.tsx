@@ -75,7 +75,8 @@ export default function SignIn() {
     try {
       const response = await api.post("/login", { email: data.get('email'), password: data.get('password') });
       console.log(response.data.message);
-      login();
+      await login();
+      navigate('/')
     } catch (error) {
       console.error("Login failed", error);
       setCredentialsErrorMessage('Invalid Crendtials !')

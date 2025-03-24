@@ -2,58 +2,64 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box, ImageList, ImageListItem, ImageListItemBar, ListSubheader, Typography } from "@mui/material";
 import Navbar from "../components/Navbar";
+import SearchBar from "../components/SearchBar";
+import api from "../utils/apiAxios";
 
 interface TemplateData {
-  id: string;
-  img: string;
-  tag: string;
+  template_id: string;
+  tags: string;
+  s3_preview: string;
+
 }
 const Home = () => {
-    const [templates, setTemplates] = useState([])
-    
-    useEffect(()=>{
-      getTemplates()
-    },[]);
-    const getTemplates = async() => {
-      try {
-        const url = `https://67b3ff48392f4aa94fa8e383.mockapi.io/api/v1/templates`
-        const response = await axios.get(url);
-        setTemplates(response.data)
-      } catch (error) {
-        console.error(error);
-      }
-    }
+    const [templates, setTemplates] = useState<TemplateData[]>([]);
+
+    useEffect(() => {
+      const fetchTemplates = async () => {
+        try {
+          const response = await api.get("/templates");
+          setTemplates(response.data?.templates);
+        } catch (error) {
+          console.error("Error fetching templates:", error);
+        }
+      };
+
+      fetchTemplates();
+    }, []);
+
+    const searchFor = (search:any) => { }
+
     return (
-        <div>
+        <Box sx={{backgroundColor: '#ededff', height: '100vh'}}>
           <Navbar />
             <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              minHeight="100vh"
-              flexDirection={'column'}
+              alignItems="center" 
+              justifyItems={'center'}
+              margin={5}
             >
               
-              <Typography variant="h3" gutterBottom>
-                Check out the templates
+              <Typography variant="h3" sx={{fontFamily: "EB Garamond" , color: '#2d3159', marginBottom: 3}}>
+                From Resume to Website — Effortless Portfolio Creation!
               </Typography>
-              <ImageList sx={{ height: 450 }} gap={20}>
+              <Typography variant="h5" sx={{fontFamily: "EB Garamond" , color: '#2d3159', marginBottom: 2, fontSize: 30}}>
+                Explore our templates to help you easily create your own design online
+              </Typography>
+              <SearchBar onSearch={searchFor}/>
+              <ImageList gap={20}>
                 {templates.map((item:TemplateData) => (
-                  <ImageListItem key={item.img}>
+                  <ImageListItem key={item.template_id} sx={{boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 10px", margin: 10}}>
                     <img
-                      srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                      src={`${item.img}?w=248&fit=crop&auto=format`}
-                      alt={item.id}
+                      src={`${item.s3_preview}`}
                       loading="lazy"
                     />
-                    <ImageListItemBar
-                      title={item.tag}
-                    />
+                    {/* <ImageListItemBar
+                      title={item.tags}
+                    /> */}
                   </ImageListItem>
                 ))}
               </ImageList>
             </Box>
-        </div>
+        </Box>
     );
   };
   export default Home;

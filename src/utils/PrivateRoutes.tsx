@@ -4,8 +4,17 @@ import { useAuth } from "./AuthProvider";
 const PrivateRoutes = () => {
     const { user, loading } = useAuth();
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <div></div>;
 
     return user ? <Outlet /> : <Navigate to="/login" />;
 };
-export default PrivateRoutes;
+
+
+const PublicRoutes = () => {
+
+    const { user, loading } = useAuth();
+    if (loading) return <div></div>;
+    return user ? <Navigate to="/" replace /> : <Outlet />;
+};
+
+export { PrivateRoutes, PublicRoutes };
