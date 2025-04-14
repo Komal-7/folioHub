@@ -11,6 +11,7 @@ import Home from './pages/home';
 import Login from './pages/login';
 import SignUp from './pages/signUp';
 import './App.css'
+import EditorPage from './pages/editorPage';
 function App() {
 
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route element={<PrivateRoutes />}>
             {" "}
             <Route path="/" element={<Home />} />
+            <Route path="/editor/:templateId" element={<EditorPage />} />
           </Route>
           <Route element={<PublicRoutes />}>
             {" "}

@@ -77,9 +77,9 @@ export default function SignIn() {
       console.log(response.data.message);
       await login();
       navigate('/')
-    } catch (error) {
+    } catch (error:any) {
       console.error("Login failed", error);
-      setCredentialsErrorMessage('Invalid Crendtials !')
+      setCredentialsErrorMessage(error.response.data.error)
     }
       
   };

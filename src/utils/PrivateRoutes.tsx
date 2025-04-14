@@ -1,12 +1,13 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
+import Navbar from "../components/Navbar";
 
 const PrivateRoutes = () => {
     const { user, loading } = useAuth();
 
     if (loading) return <div></div>;
 
-    return user ? <Outlet /> : <Navigate to="/login" />;
+    return user ? <div><Navbar /><Outlet /></div> : <Navigate to="/login" />;
 };
 
 

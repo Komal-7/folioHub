@@ -7,7 +7,6 @@ import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../utils/AuthProvider';
-import AppTheme from './shared-theme/AppTheme';
 import { Menu, MenuItem, styled, Tooltip } from '@mui/material';
 
 const Offset = styled('div')(({ theme }) => theme?.mixins?.toolbar);
@@ -28,11 +27,10 @@ export default function Navbar() {
         setAnchorElUser(null);
     };
     return (
-        // <AppTheme>
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="fixed" sx={{backgroundColor: '#daddff'}}>
                     <Toolbar>
-                    <img src={`/logoFolio.png`} alt="Logo" style={{ width: "50px", height: "50px", marginRight: '1rem' }}/>
+                    <img src={`/images/logoFolio.png`} alt="Logo" style={{ width: "50px", height: "50px", marginRight: '1rem' }}/>
                     <Typography  component="div" sx={{ fontFamily: "Comforter", flexGrow: 1, fontSize: 46, color: '#2A2F69', height: 52, letterSpacing: 3, fontWeight: 600 }}>
                         Folio Hub
                     </Typography>
@@ -75,6 +73,5 @@ export default function Navbar() {
                 </AppBar>
                 <Offset />
             </Box>
-        // </AppTheme>
   );
 }

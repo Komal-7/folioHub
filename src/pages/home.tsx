@@ -4,6 +4,7 @@ import { Box, ImageList, ImageListItem, ImageListItemBar, ListSubheader, Typogra
 import Navbar from "../components/Navbar";
 import SearchBar from "../components/SearchBar";
 import api from "../utils/apiAxios";
+import { useNavigate } from "react-router-dom";
 
 interface TemplateData {
   template_id: string;
@@ -13,7 +14,7 @@ interface TemplateData {
 }
 const Home = () => {
     const [templates, setTemplates] = useState<TemplateData[]>([]);
-
+    const navigate = useNavigate();
     useEffect(() => {
       const fetchTemplates = async () => {
         try {
@@ -28,6 +29,10 @@ const Home = () => {
     }, []);
 
     const searchFor = (search:any) => { }
+    
+    const handleTemplateClick = (templateId: string) => {
+      navigate(`/editor/${templateId}`);
+    };
 
     return (
         <Box sx={{backgroundColor: '#ededff', height: '100vh'}}>
@@ -47,14 +52,13 @@ const Home = () => {
               <SearchBar onSearch={searchFor}/>
               <ImageList gap={20}>
                 {templates.map((item:TemplateData) => (
-                  <ImageListItem key={item.template_id} sx={{boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 10px", margin: 10}}>
+                  <ImageListItem key={item.template_id} onClick={() => handleTemplateClick(item.template_id)}
+                    sx={{boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 10px", margin: 10}}
+                  >
                     <img
                       src={`${item.s3_preview}`}
                       loading="lazy"
                     />
-                    {/* <ImageListItemBar
-                      title={item.tags}
-                    /> */}
                   </ImageListItem>
                 ))}
               </ImageList>
