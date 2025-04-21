@@ -79,7 +79,7 @@ export default function SignIn() {
       navigate('/')
     } catch (error:any) {
       console.error("Login failed", error);
-      setCredentialsErrorMessage(error.response.data.error)
+      setCredentialsErrorMessage("Something went wrong !")
     }
       
   };

@@ -53,7 +53,7 @@ const Home = () => {
               <ImageList gap={20}>
                 {templates.map((item:TemplateData) => (
                   <ImageListItem key={item.template_id} onClick={() => handleTemplateClick(item.template_id)}
-                    sx={{boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 10px", margin: 10}}
+                    sx={{boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 10px", margin: 10, cursor:'pointer'}}
                   >
                     <img
                       src={`${item.s3_preview}`}

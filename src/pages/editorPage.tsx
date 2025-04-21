@@ -1,40 +1,84 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import api from "../utils/apiAxios";
-import { GrapesEditor } from "../components/GrapesEditor";
+import React, { useEffect, useRef, useState } from 'react';
+import GrapesEditor from '../components/GrapesEditor';
+import { Box, Button } from '@mui/material';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
+import PublishIcon from '@mui/icons-material/Publish';
+import api from '../utils/apiAxios';
+import { useParams } from 'react-router-dom';
+import { useAuth } from '../utils/AuthProvider';
 
-const EditorPage = () => {
-    const { templateId } = useParams<{ templateId: string }>();
-    const [html, setHtml] = useState<string | null>(null);
-    const [css, setCss] = useState<string | null>(null);
-  
-    useEffect(() => {
-      const fetchTemplate = async () => {
-        const res = await api.get(`/template/${templateId}`);
-        const data = res.data.template;
-
-        const htmlRes = await api.get(data.s3_html, { responseType: "text" });
-        const cssRes = await api.get(data.s3_css, { responseType: "text" });
-
-        const htmlCode = htmlRes.data;
-        const cssCode = cssRes.data;
-
-        setHtml(htmlCode);
-        setCss(cssCode);
-      };
-  
-      fetchTemplate();
-    }, [templateId]);
-    return (
-        
-        <div>
-        {html && css ? (
-          <GrapesEditor html={html} css={css} />
-        ) : (
-          <p>Loading editor...</p>
-        )}
-      </div>
-    );
+interface ChildComponentRef {
+  getValue: (project?: boolean) => any;
 }
+const EditorPage = () => {
+  const { templateId } = useParams<{ templateId: string }>();
+  const { user } = useAuth();
+  const childRef = useRef<ChildComponentRef | null>(null);
+  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectUrl, setProjectUrl] = useState(null)
+
+  useEffect(() => {
+    const fetchTemplate = async () => {
+      const res = await api.get(`/template/${templateId}`);
+      const data = res.data.template;
+
+      setProjectUrl(data.template_json);
+    };
+
+    fetchTemplate();
+  }, [templateId]);
+
+  const handleSave = async () => {
+    if (childRef.current) {
+      const childValue = childRef.current.getValue();
+      try {
+        const response = await api.post("/save-project", { project_json: childValue, project_id: projectId });
+        console.log("Success:", response.data);
+        setProjectId(response.data.project_id)
+      } catch (err:any) {
+        console.error("Error:", err?.response?.data || err?.message);
+      }
+    } else {
+      console.log('Something went wrong !');
+    }
+  };
+
+  const handleDeploy = async () => {
+
+    if (childRef.current) {
+      const editor = childRef.current.getValue(false);
+      try {
+        const files = await editor.runCommand('studio:projectFiles', { styles: 'inline' })
+        // For simplicity, we'll "publish" only the first page.
+        const firstPage = files.find((file: { mimeType: string; }) => file.mimeType === 'text/html');
+        const websiteData = {
+          username: user?.username,
+          html: firstPage.content,
+        };
+        // const res = await api.post('/deploy',websiteData)
+      } catch (err:any) {
+        console.error("Error:", err?.response?.data || err?.message);
+      }
+    } else {
+      console.log('Something went wrong !');
+    }
+  };
+
+  return (
+    <Box bgcolor={'#ededff'}>
+      <Box pt={2} bgcolor={'#ededff'}>
+        <Box height={52} display={'flex'} alignItems={'center'} justifyContent={'end'} borderRadius={'10px 10px 0px 0px'}>
+          <Button onClick={handleSave} variant="outlined" sx={{color: '#5b5bfc', marginRight: '8px', border: '1px solid #5b5bfc'}} startIcon={<SaveAsIcon />}>
+            Save
+          </Button>
+          <Button onClick={handleDeploy} variant="contained" sx={{backgroundColor: 'white', color: '#5b5bfc', marginRight: '8px', border: '1px solid #5b5bfc'}} endIcon={<PublishIcon />}>
+            Deploy
+          </Button>
+        </Box>
+        {projectUrl && <GrapesEditor ref={childRef} projectUrl={projectUrl}/>}
+      </Box>
+    </Box>
+  );
+};
 
 export default EditorPage;
