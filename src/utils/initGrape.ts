@@ -7,7 +7,7 @@ export async function initGrapesStudio(rootElement: HTMLElement, projectUrl: str
     
     await createStudioEditor({
       root: rootElement,
-      licenseKey: 'YOUR_LICENSE_KEY',
+      licenseKey: '17bacf93f7ae46569df40f99ac7de2eadffe819b68f34632ae8c925ed2809eb4',
       actions: ({ actions }: any) =>
         actions.filter((a: { id: string }) => !['showCode', 'showImportCode'].includes(a.id)),
       project: {
