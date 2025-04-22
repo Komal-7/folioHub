@@ -1,22 +1,34 @@
 import React, { useEffect, useRef, useState } from 'react';
-import GrapesEditor from '../components/GrapesEditor';
+// import GrapesEditor from '../components/GrapesEditor';
 import { Box, Button } from '@mui/material';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import PublishIcon from '@mui/icons-material/Publish';
 import api from '../utils/apiAxios';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../utils/AuthProvider';
+import { initGrapesStudio } from '../utils/initGrape';
 
-interface ChildComponentRef {
-  getValue: (project?: boolean) => any;
-}
 const EditorPage = () => {
   const { templateId } = useParams<{ templateId: string }>();
   const { user } = useAuth();
-  const childRef = useRef<ChildComponentRef | null>(null);
+  const grapeEditor = useRef<any>(null);
+  const grapeProject = useRef<any>(null);
   const [projectId, setProjectId] = useState<string | null>(null);
-  const [projectUrl, setProjectUrl] = useState(null)
+  const [projectUrl, setProjectUrl] = useState('')
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current && projectUrl) {
+      initGrapesStudio(containerRef.current, projectUrl, (editor,project) => {
+        grapeEditor.current = editor;
+        grapeProject.current = project;
+      });
+    }
+    return () => {
+      grapeEditor.current?.destroy?.(); // cleanup if needed
+    };
+  }, [projectUrl]);
   useEffect(() => {
     const fetchTemplate = async () => {
       const res = await api.get(`/template/${templateId}`);
@@ -29,41 +41,31 @@ const EditorPage = () => {
   }, [templateId]);
 
   const handleSave = async () => {
-    if (childRef.current) {
-      const childValue = childRef.current.getValue();
       try {
-        const response = await api.post("/save-project", { project_json: childValue, project_id: projectId });
+        const response = await api.post("/save-project", { project_json: grapeProject.current, project_id: projectId });
         console.log("Success:", response.data);
         setProjectId(response.data.project_id)
       } catch (err:any) {
         console.error("Error:", err?.response?.data || err?.message);
       }
-    } else {
-      console.log('Something went wrong !');
-    }
   };
 
   const handleDeploy = async () => {
-
-    if (childRef.current) {
-      const editor = childRef.current.getValue(false);
-      try {
-        const files = await editor.runCommand('studio:projectFiles', { styles: 'inline' })
-        // For simplicity, we'll "publish" only the first page.
-        const firstPage = files.find((file: { mimeType: string; }) => file.mimeType === 'text/html');
-        const websiteData = {
-          username: user?.username,
-          html: firstPage.content,
-        };
-        // const res = await api.post('/deploy',websiteData)
-      } catch (err:any) {
-        console.error("Error:", err?.response?.data || err?.message);
-      }
-    } else {
-      console.log('Something went wrong !');
+    try {
+      const files = await grapeEditor.current.runCommand('studio:projectFiles', { styles: 'inline' })
+      // For simplicity, we'll "publish" only the first page.
+      const firstPage = files.find((file: { mimeType: string; }) => file.mimeType === 'text/html');
+      const websiteData = {
+        username: user?.username,
+        html: firstPage.content,
+      };
+      // const res = await api.post('/deploy',websiteData)
+    } catch (err:any) {
+      console.error("Error:", err?.response?.data || err?.message);
     }
-  };
-
+  } 
+  
+  
   return (
     <Box bgcolor={'#ededff'}>
       <Box pt={2} bgcolor={'#ededff'}>
@@ -75,7 +77,7 @@ const EditorPage = () => {
             Deploy
           </Button>
         </Box>
-        {projectUrl && <GrapesEditor ref={childRef} projectUrl={projectUrl}/>}
+        <Box height={'calc(100vh - 132px)'} ref={containerRef} />
       </Box>
     </Box>
   );
