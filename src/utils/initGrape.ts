@@ -2,6 +2,7 @@
 import createStudioEditor from '@grapesjs/studio-sdk';
 import '@grapesjs/studio-sdk/style';
 import axios from 'axios';
+import api from './apiAxios';
 
 export async function initGrapesStudio(rootElement: HTMLElement, projectUrl: string, onReady: (editor: any,project: any) => void) {
     
@@ -20,9 +21,12 @@ export async function initGrapesStudio(rootElement: HTMLElement, projectUrl: str
           for (const file of files) {
             body.append('files', file);
           }
-          const response = await fetch('ASSETS_UPLOAD_URL', { method: 'POST', body });
-          const result = await response.json();
-          return result;
+          const response = await api.post('/upload', body, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          return response.data;
         },
         onDelete: async ({ assets }) => {
           const body = JSON.stringify(assets);
