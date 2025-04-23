@@ -21,17 +21,22 @@ export async function initGrapesStudio(rootElement: HTMLElement, projectUrl: str
           for (const file of files) {
             body.append('files', file);
           }
-          const response = await api.post('/upload', body, {
+          const response = await api.post('/assets', body, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
           });
           return response.data;
         },
-        onDelete: async ({ assets }) => {
-          const body = JSON.stringify(assets);
-          await fetch('ASSETS_DELETE_URL', { method: 'DELETE', body });
+        onLoad: async () => {
+          const response = await api.get('/assets');
+          return response.data.assets;
         },
+        onDelete: async ({ assets }) => {
+          await api.delete('/assets', {
+            data: { assets }
+          });
+        }      
       },
       storage: {
         type: 'self',
