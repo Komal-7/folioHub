@@ -12,6 +12,7 @@ import Login from './pages/login';
 import SignUp from './pages/signUp';
 import './App.css'
 import EditorPage from './pages/editorPage';
+import UserPortfolio from './pages/userPortfolio';
 function App() {
 
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
           </Route>
+          <Route path="/portfolio/:sitename" element={<UserPortfolio />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

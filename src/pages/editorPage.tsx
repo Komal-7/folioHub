@@ -56,10 +56,14 @@ const EditorPage = () => {
       // For simplicity, we'll "publish" only the first page.
       const firstPage = files.find((file: { mimeType: string; }) => file.mimeType === 'text/html');
       const websiteData = {
-        username: user?.username,
+        project_id: projectId,
+        sitename: user?.username,
         html: firstPage.content,
       };
-      // const res = await api.post('/deploy',websiteData)
+      //save first if not saved
+      await handleSave();
+      const res = await api.post('/deploy',websiteData)
+      console.log("deployed",res)
     } catch (err:any) {
       console.error("Error:", err?.response?.data || err?.message);
     }
