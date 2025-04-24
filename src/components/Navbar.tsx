@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../utils/AuthProvider';
-import { Menu, MenuItem, styled, Tooltip } from '@mui/material';
+import { Button, Menu, MenuItem, styled, Tooltip } from '@mui/material';
 
 const Offset = styled('div')(({ theme }) => theme?.mixins?.toolbar);
 
@@ -31,9 +31,15 @@ export default function Navbar() {
                 <AppBar position="fixed" sx={{backgroundColor: '#daddff'}}>
                     <Toolbar>
                     <img src={`/images/logoFolio.png`} alt="Logo" style={{ width: "50px", height: "50px", marginRight: '1rem' }}/>
-                    <Typography  component="div" sx={{ fontFamily: "Comforter", flexGrow: 1, fontSize: 46, color: '#2A2F69', height: 52, letterSpacing: 3, fontWeight: 600 }}>
+                    <Typography onClick={()=>navigate('/')} component="div" sx={{ fontFamily: "Comforter", flexGrow: 1, fontSize: 46, color: '#2A2F69', height: 52, letterSpacing: 3, fontWeight: 600 }}>
                         Folio Hub
                     </Typography>
+                    <Box sx={{height: 40, display:'flex'}}>
+                        <Button onClick={()=>navigate('/')} sx={{fontFamily: "EB Garamond", color: '#2A2F69', fontSize: 24, textTransform: 'none', marginRight:3}}>Templates</Button>
+                        <Button onClick={()=>navigate('/')} sx={{fontFamily: "EB Garamond", color: '#2A2F69', fontSize: 24, textTransform: 'none', marginRight:3}}>Community</Button>
+                        <Button onClick={()=>navigate('/my-projects')} sx={{fontFamily: "EB Garamond", color: '#2A2F69', fontSize: 24, textTransform: 'none', marginRight:7}}>My Projects</Button>
+                    </Box>
+                    
                     <Typography sx={{ fontFamily: "EB Garamond", flexGrow: 0, fontSize: 28, color: '#2A2F69', height: 40, marginRight: 1, fontWeight: 500 }}>
                         {user?.username || ''}
                     </Typography>
