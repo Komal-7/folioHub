@@ -54,7 +54,7 @@ const Home = () => {
                 Explore our templates to help you easily create your own design online
               </Typography>
               <SearchBar onSearch={searchFor}/>
-              <ImageList gap={20}>
+              <ImageList gap={50}>
                 {templates
                   .filter((template) => {
                     if (!searchValue) return true;

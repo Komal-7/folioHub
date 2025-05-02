@@ -3,7 +3,7 @@ import { Box, Button, TextField } from '@mui/material';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import PublishIcon from '@mui/icons-material/Publish';
 import api from '../utils/apiAxios';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../utils/AuthProvider';
 import { initGrapesStudio } from '../utils/initGrape';
 
@@ -11,6 +11,7 @@ const EditorPage = () => {
   const { templateId } = useParams<{ templateId: string }>();
   const location = useLocation();
   const { selectedProjectName, selectedProjectUrl } = location.state || {};
+  const navigate = useNavigate();
   const { user } = useAuth();
   const grapeEditor = useRef<any>(null);
   const grapeProject = useRef<any>(null);
@@ -18,6 +19,8 @@ const EditorPage = () => {
   const [projectUrl, setProjectUrl] = useState('')
   const [projectName, setProjectName] = useState("");
   const [error, setError] = useState(false);
+  const [saveLoad, setSaveLoad] = useState(false)
+  const [deployLoad, setDeployLoad] = useState(false)
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -54,12 +57,15 @@ const EditorPage = () => {
       setError(true);
       return;
     }
+    setSaveLoad(true)
     setError(false);
     try {
       const response = await api.post("/save-project", { project_json: grapeProject.current, project_id: projectId, project_name: projectName });
       setProjectId(response.data.project_id)
+      setSaveLoad(false)
     } catch (err:any) {
       console.error("Error:", err?.response?.data || err?.message);
+      setSaveLoad(false)
     }
   };
 
@@ -69,6 +75,7 @@ const EditorPage = () => {
         setError(true);
         return;
       }
+      setDeployLoad(true)
       setError(false);
       const files = await grapeEditor.current.runCommand('studio:projectFiles', { styles: 'inline' })
       // For simplicity, we'll "publish" only the first page.
@@ -82,8 +89,11 @@ const EditorPage = () => {
       await handleSave();
       const res = await api.post('/deploy',websiteData)
       console.log("deployed",res)
+      setDeployLoad(false)
+      navigate('/my-projects')
     } catch (err:any) {
       console.error("Error:", err?.response?.data || err?.message);
+      setDeployLoad(false)
     }
   } 
   
@@ -122,10 +132,10 @@ const EditorPage = () => {
               error={error}
             />
           </Box>
-          <Button onClick={handleSave} variant="outlined" sx={{color: '#5b5bfc', marginRight: '8px', border: '1px solid #5b5bfc'}} startIcon={<SaveAsIcon />}>
+          <Button loading={saveLoad} loadingPosition="start" onClick={handleSave} variant="outlined" sx={{color: '#5b5bfc', marginRight: '8px', border: '1px solid #5b5bfc'}} startIcon={<SaveAsIcon />}>
             Save
           </Button>
-          <Button onClick={handleDeploy} variant="contained" sx={{backgroundColor: 'white', color: '#5b5bfc', marginRight: '8px', border: '1px solid #5b5bfc'}} endIcon={<PublishIcon />}>
+          <Button loading={deployLoad} loadingPosition="start" onClick={handleDeploy} variant="contained" sx={{backgroundColor: 'white', color: '#5b5bfc', marginRight: '8px', border: '1px solid #5b5bfc'}} endIcon={<PublishIcon />}>
             Deploy
           </Button>
         </Box>
