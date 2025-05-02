@@ -39,7 +39,7 @@ const Home = () => {
     };
 
     return (
-        <Box sx={{backgroundColor: '#ededff', height: '100vh'}}>
+        <Box sx={{backgroundColor: '#ededff', height: '100%'}}>
           <Navbar />
             <Box
               alignItems="center" 
@@ -63,22 +63,24 @@ const Home = () => {
                     );
                   })
                   .map((item) => (
+                    <Box>
                     <ImageListItem
                       key={item.template_id}
                       onClick={() => handleTemplateClick(item.template_id)}
                       sx={{
                         boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 10px",
-                        margin: 10,
                         cursor: "pointer",
+                        width: '500px',
                       }}
                     >
-                      <img src={item.s3_preview} loading="lazy" />
-                      <Box m={1} display="flex" flexWrap="wrap" gap={1}>
-                        {item.tags.map((tag) => (
-                          <Chip key={tag} label={`#${tag}`} variant="outlined" size="small" />
-                        ))}
-                      </Box>
+                      <img src={item.s3_preview} loading="lazy" height={'100%'} width={'100%'}/>
                     </ImageListItem>
+                    <Box mt={1}>
+                      {item.tags.map((tag) => (
+                        <Chip key={tag} label={`#${tag}`} variant="outlined" size="small" sx={{marginRight: 1}}/>
+                      ))}
+                    </Box>
+                    </Box>
                   ))}
                 </ImageList>
             </Box>

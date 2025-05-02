@@ -66,7 +66,7 @@ export default function Navbar() {
                         onClose={handleCloseUserMenu}
                         >
                             <MenuItem key={'account-setting'} onClick={handleCloseUserMenu}>
-                                <Typography sx={{ textAlign: 'center' }}>Account</Typography>
+                                <Typography sx={{ textAlign: 'center' }} onClick={()=> navigate('/my-account')}>Account</Typography>
                             </MenuItem>
                             <MenuItem key={'logout-setting'} onClick={handleCloseUserMenu}>
                                 <Typography sx={{ textAlign: 'center' }} onClick={handleSignOut}>

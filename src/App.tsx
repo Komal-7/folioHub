@@ -14,6 +14,7 @@ import './App.css'
 import EditorPage from './pages/editorPage';
 import UserPortfolio from './pages/userPortfolio';
 import MyProjects from './pages/myProjects';
+import MyAccount from './pages/myAccount';
 function App() {
 
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/editor/:templateId" element={<EditorPage />} />
             <Route path="/my-projects" element={<MyProjects />} />
+            <Route path="/my-account" element={<MyAccount />} />
           </Route>
           <Route element={<PublicRoutes />}>
             {" "}
