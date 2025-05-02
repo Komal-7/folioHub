@@ -58,7 +58,7 @@ const MyProjects = () => {
   };
   
   return (
-    <Box bgcolor={'#ededff'} height={'100vh'} sx={{fontFamily: "EB Garamond"}}>
+    <Box sx={{fontFamily: "EB Garamond"}}>
         {code && 
             (<Box pt={4} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Box pr={1} display={'flex'}>

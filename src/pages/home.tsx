@@ -39,7 +39,7 @@ const Home = () => {
     };
 
     return (
-        <Box sx={{backgroundColor: '#ededff', height: '100%'}}>
+        <Box>
           <Navbar />
             <Box
               alignItems="center" 
