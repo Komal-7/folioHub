@@ -5,7 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@grapesjs/studio-sdk": "^1.0.39",
+    "@grapesjs/studio-sdk": "^1.0.43",
     "@mui/material": "^6.4.5",
     "@mui/system": "^6.4.11",
     "@testing-library/dom": "^10.4.0",
